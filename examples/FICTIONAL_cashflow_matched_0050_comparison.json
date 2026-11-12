@@ -1,0 +1,82 @@
+{
+  "schema_version": "FRIEND-LEDGER-REFERENCE-v1",
+  "synthetic_only": true,
+  "start_date": "2025-11-12",
+  "initial": {
+    "F": {
+      "0050_units": 100,
+      "00631L_units": 50,
+      "cash": "1000"
+    },
+    "A": {
+      "0050_units": 0,
+      "00631L_units": 50,
+      "cash": "11000"
+    }
+  },
+  "days": [
+    {
+      "date": "2025-11-12",
+      "prices": {
+        "0050": "100",
+        "00631L": "20"
+      },
+      "source_verified": true,
+      "events": [],
+      "benchmark_0050_price_basis": "OFFICIAL_RAW_CLOSE",
+      "benchmark_0050_actions_checked": true
+    },
+    {
+      "date": "2025-11-13",
+      "prices": {
+        "0050": "100",
+        "00631L": "20"
+      },
+      "source_verified": true,
+      "events": [
+        {
+          "type": "DEPOSIT",
+          "sleeve": "F",
+          "amount": "500"
+        },
+        {
+          "type": "DEPOSIT",
+          "sleeve": "A",
+          "amount": "500"
+        },
+        {
+          "type": "BUY",
+          "trade_id": "FAKE-F-1",
+          "sleeve": "F",
+          "symbol": "0050",
+          "units": 5,
+          "fill_price": "100",
+          "all_in_fees": "1"
+        },
+        {
+          "type": "BUY",
+          "trade_id": "FAKE-A-1",
+          "sleeve": "A",
+          "symbol": "00631L",
+          "units": 10,
+          "fill_price": "20",
+          "all_in_fees": "1"
+        }
+      ],
+      "benchmark_0050_price_basis": "OFFICIAL_RAW_CLOSE",
+      "benchmark_0050_actions_checked": true
+    },
+    {
+      "date": "2025-11-14",
+      "prices": {
+        "0050": "101",
+        "00631L": "21"
+      },
+      "source_verified": true,
+      "events": [],
+      "benchmark_0050_price_basis": "OFFICIAL_RAW_CLOSE",
+      "benchmark_0050_actions_checked": true
+    }
+  ],
+  "benchmark_price_source_note": "FICTIONAL PRICES ONLY, NOT ACTUAL TWSE PRICES"
+}

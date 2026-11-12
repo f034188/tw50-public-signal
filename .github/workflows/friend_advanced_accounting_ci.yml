@@ -12,6 +12,7 @@ on:
       - "tests/test_friend_0050_benchmark_reference.py"
       - "tests/test_friend_private_local_ledger.py"
       - "examples/FICTIONAL_friend_account_only.json"
+      - "examples/FICTIONAL_cashflow_matched_0050_comparison.json"
       - ".github/workflows/friend_advanced_accounting_ci.yml"
 
 permissions:
@@ -56,5 +57,19 @@ jobs:
           assert d["under_one_year_annualization_suppressed"] is True
           assert d["orders_placed"] is False
           print("FAKE_LEDGER_CASHFLOW_AUDIT_PASS")
+          PY
+      - name: Reproduce fictional matched-flow 0050 and F/A comparison
+        run: |
+          python tools/friend_0050_benchmark_reference.py examples/FICTIONAL_cashflow_matched_0050_comparison.json             --output /tmp/fake_0050_benchmark.json
+          python - <<'PY'
+          import json
+          d=json.load(open("/tmp/fake_0050_benchmark.json",encoding="utf-8"))
+          assert d["opening_capital_twd"]=="24000.00"
+          assert d["external_net_contributions_twd"]=="1000.00"
+          assert d["ending_value_twd"]=="25208.53"
+          assert d["net_pnl_twd"]=="208.53"
+          assert d["personal_cumulative_twr_pct"]=="0.8520"
+          assert d["orders_placed"] is False
+          print("FICTIONAL_SAME_CASHFLOW_BENCHMARK_PASS")
           PY
 # No private user positions, no public-site upload of account data, no brokerage orders.

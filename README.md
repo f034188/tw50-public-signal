@@ -8,16 +8,20 @@
 
 已於 2026-11-12 完成 Pages 部署與 GitHub Actions 免登入 HTTP 驗證（首頁與 `market.json` 皆可讀取）。資料日期會顯示於網頁；若逾期或驗證不通過，網站會顯示「資料待確認／暫不判定」，不可將舊訊號用於操作。
 
-## 新朋友從這裡開始
+## 新朋友從這裡開始（正式版 v2.0）
 
-- [**朋友策略使用與風險提醒手冊（v1.0 初稿）**](FRIEND_STRATEGY_HANDBOOK_DRAFT.md)：策略主旨、F/A 配置、N21 研究回測與 0050 對照、負面測試及免責事項。
-- [**進階版虛擬持倉、薪資入金與報酬計算規格**](docs/FRIEND_ADVANCED_LEDGER_SPEC_V1.md)：由 20 項純虛構測試驗證的 TWR／XIRR、股息與分割記帳參考。
-- [**ChatGPT 每日提醒與初次模式選擇**](FRIEND_CHATGPT_DAILY_REMINDER.md)：第一次選擇「基礎版（不提供資料）」或「進階版（自願提供持股／現金）」，然後由朋友自己確認是否建立 08:00 排程。
+**只需兩份文件：**
 
-只是開啟網站**不會**建立 ChatGPT 自動提醒，朋友須在自己的帳號自行同意啟用。個人進階資料不要貼到公開儲存庫。
+1. [**A｜朋友使用與風險說明書 v2.0**](FRIEND_HANDBOOK_FINAL_V2.md)：策略主旨、實際研究回測與 0050 對照、風險、免責、進階版權限與操作方式。
+2. [**B｜朋友專用 ChatGPT 啟用及每日提醒系統 v2.0**](FRIEND_GPT_SETUP_FINAL_V2.md)：一鍵複製提示詞、基礎版／進階版初次選擇、私人 GitHub 設定、每日配置圖與10關故障排查。
 
-- [**N45：0050 同資金流對照＋私人帳本接續**](docs/FRIEND_ADVANCED_N45_BENCHMARK_AND_PRIVATE_CHECKPOINT.md)：已用 52 項虛構測試驗證；私人資料不會寫入公開儲存庫，也不會被 ChatGPT 排程自動取得。
-- [**N46：朋友私人帳本與 ChatGPT 排程安全交接**](docs/FRIEND_N46_PRIVATE_SCHEDULED_HANDOFF.md)：新增 18 項虛構測試、共 70 項通過；朋友自行授權其 Private GitHub，實際連接未驗收前不宣稱全自動。
+建議先讀 A，再把 B 的「主指令」貼到朋友**自己的普通 ChatGPT 對話**。朋友必須自行同意並確認排程；開網站不會自動建立 ChatGPT 提醒。**不願提供個資就使用基礎版**。
+
+**技術規格（選讀）：**
+
+- [N45：0050 同現金流對照、私有帳本接續](docs/FRIEND_ADVANCED_N45_BENCHMARK_AND_PRIVATE_CHECKPOINT.md)：52 項純虛構測試通過。
+- [N46：朋友私人帳本與 ChatGPT 排程交接](docs/FRIEND_N46_PRIVATE_SCHEDULED_HANDOFF.md)：70 項虛構測試通過；**未**對朋友的私人 GitHub 與排程進行實際端對端驗證。
+- [歷史初稿 v1.0](FRIEND_STRATEGY_HANDBOOK_DRAFT.md)及[舊啟用說明](FRIEND_CHATGPT_DAILY_REMINDER.md)僅供研究版本留存。**正式分享優先使用 v2.0。**
 
 ## 公開內容
 
@@ -35,11 +39,11 @@
 3. 該結果以**僅能寫入本公開儲存庫**的 GitHub fine-grained token 更新 `site/market.json`。
 4. 公開 GitHub Pages 自動重新部署；網站若超過四日未更新，直接顯示「資料過期／暫不判定」。
 
-尚未設定同步憑證前，網站會維持「資料待確認」，不虛構最新訊號。公開資料 **`is_actionable = false`**，不支援下單。
+公開訊號已完成首次私有→公開市場資料同步與匿名網站訪問驗證；若未來同步中斷、資料過期或異常，網站應顯示「資料待確認」，不虛構最新訊號。公開資料 **`is_actionable = false`**，不支援下單。
 
-## 啟用 Pages
+## 網站部署
 
-進入此儲存庫 **Settings → Pages → Build and deployment → Source: GitHub Actions**。再到 **Actions** 重新執行 `Publish market-only 0050 trend site` 工作流程。不能將私人研究儲存庫改成 Public。
+GitHub Pages 已於 2026-11-12 部署及驗證。若日後部署異常，查看本儲存庫的 Actions 紀錄及 Pages 設定；**不可把研究者的私人儲存庫改成 Public**。
 
 ## 免責聲明
 

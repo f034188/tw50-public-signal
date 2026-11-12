@@ -8,9 +8,11 @@ on:
       - "tools/friend_advanced_accounting_reference.py"
       - "tools/friend_0050_benchmark_reference.py"
       - "tools/friend_private_local_ledger.py"
+      - "tools/friend_n46_private_handoff.py"
       - "tests/test_friend_advanced_accounting_reference.py"
       - "tests/test_friend_0050_benchmark_reference.py"
       - "tests/test_friend_private_local_ledger.py"
+      - "tests/test_friend_n46_private_handoff.py"
       - "examples/FICTIONAL_friend_account_only.json"
       - "examples/FICTIONAL_cashflow_matched_0050_comparison.json"
       - ".github/workflows/friend_advanced_accounting_ci.yml"
@@ -44,6 +46,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p "test_friend_0050_benchmark_reference.py" -v
           python -m unittest discover -s tests -p "test_friend_private_local_ledger.py" -v
+          python -m unittest discover -s tests -p "test_friend_n46_private_handoff.py" -v
       - name: Reproduce fictional portfolio numerical output
         run: |
           python tools/friend_advanced_accounting_reference.py examples/FICTIONAL_friend_account_only.json --output /tmp/fake_portfolio_result.json

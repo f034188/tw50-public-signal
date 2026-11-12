@@ -4,7 +4,9 @@
 
 ## 查看網站
 
-待 GitHub Pages 啟用後，網站將使用此儲存庫的 GitHub Pages 專案網址。尚未完成 Pages 啟用與公開可達性測試之前，**請勿將預設網址當成已正式上線**。
+**正式公開網址：[https://f034188.github.io/tw50-public-signal/](https://f034188.github.io/tw50-public-signal/)**
+
+已於 2026-11-12 完成 Pages 部署與 GitHub Actions 免登入 HTTP 驗證（首頁與 `market.json` 皆可讀取）。資料日期會顯示於網頁；若逾期或驗證不通過，網站會顯示「資料待確認／暫不判定」，不可將舊訊號用於操作。
 
 ## 公開內容
 

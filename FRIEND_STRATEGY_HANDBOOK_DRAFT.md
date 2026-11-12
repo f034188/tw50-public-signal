@@ -163,6 +163,8 @@ ChatGPT 不是券商，也不會代替本人執行委託。朋友須自行在**�
 
 進階個人績效的驗證細節，請參閱 [進階版資金流與績效規格](docs/FRIEND_ADVANCED_LEDGER_SPEC_V1.md)。其程式與測資均為虛構參考，不包含任何真實持倉。
 
+實作層面的最新參考：[N45 同資金流 0050 對照與私人帳本接續](docs/FRIEND_ADVANCED_N45_BENCHMARK_AND_PRIVATE_CHECKPOINT.md)。**52 項虛構測試通過不等於真實券商帳本、ChatGPT 自動記憶或朋友每日績效已驗收。** 起始持股成本、配息、資料品質與個人資金流不同，不能直接拿舊歷史 XIRR 充當啟用後結果。
+
 ## 11｜朋友需要哪些檔案？以及改變策略
 
 **一般使用只需要本手冊＋[朋友版 ChatGPT 提醒指令](FRIEND_CHATGPT_DAILY_REMINDER.md)＋[公開網站](https://f034188.github.io/tw50-public-signal/)。** 不必取得私人研究 ZIP、歷史成交資料或研究者本人帳戶。

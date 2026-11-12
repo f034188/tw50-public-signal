@@ -1,0 +1,14 @@
+{
+  "schema_version": "N43-PUBLIC-MARKET-OBSERVATION-v1",
+  "data_date": null,
+  "generated_at_taipei": null,
+  "display_status": "BLOCKED",
+  "trend": null,
+  "trend_change": null,
+  "l2_trading": "資料待查",
+  "update_quality": "網站已建立；尚待取得經核對的最新盤後訊號。不可作為買賣依據。",
+  "corporate_action_discovery_complete": false,
+  "is_actionable": false,
+  "data_source": "證交所盤後資料；自有趨勢模型",
+  "purpose": "市場觀察；不構成交易建議"
+}

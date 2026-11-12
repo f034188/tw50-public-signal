@@ -64,11 +64,10 @@ jobs:
     steps:
       - name: Check whether GitHub Pages was enabled in repository settings
         id: page-status
-        env:
-          GH_TOKEN: \${{ github.token }}
         run: |
+          # Public repository: unauthenticated Pages GET avoids false 401
+          # from a restricted GITHUB_TOKEN before Pages is enabled.
           HTTP_CODE=$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" \
-             --header "Authorization: Bearer $GH_TOKEN" \
              --header "Accept: application/vnd.github+json" \
              "https://api.github.com/repos/$GITHUB_REPOSITORY/pages")
           if [ "$HTTP_CODE" = 200 ]; then

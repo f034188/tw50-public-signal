@@ -60,7 +60,7 @@ jobs:
       contents: read
     environment:
       name: github-pages
-      url: \${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Check whether GitHub Pages was enabled in repository settings
         id: page-status

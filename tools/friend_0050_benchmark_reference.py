@@ -167,7 +167,7 @@ def benchmark(data):
             ext+=amount if e["type"]=="DEPOSIT" else -amount
         state["cash"]+=ext
         if state["cash"]<0:
-            sold=ensure_cash_for_withdrawal(state,raw_price,-state["cash"])
+            sold=ensure_cash_for_withdrawal(state,raw_price,Decimal(0))
         else:
             sold=0
         # Negative cash after funding the withdrawal means impossible.

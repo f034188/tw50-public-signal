@@ -1,0 +1,84 @@
+name: Publish market-only 0050 trend site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-trend-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Strict public folder and market payload validation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          folder=Path("site")
+          items={p.name for p in folder.iterdir() if p.is_file()}
+          assert items=={"index.html","market.json"}, "Unexpected file in published site folder"
+          report=json.loads((folder/"market.json").read_text(encoding="utf-8"))
+          allowed={"schema_version","data_date","generated_at_taipei","display_status",
+                   "trend","trend_change","l2_trading","update_quality",
+                   "corporate_action_discovery_complete","is_actionable","data_source","purpose"}
+          assert set(report)==allowed, "Unexpected field in public market JSON"
+          assert report["is_actionable"] is False, "No trade instructions allowed"
+          assert report["corporate_action_discovery_complete"] is False
+          assert report["schema_version"]=="N43-PUBLIC-MARKET-OBSERVATION-v1"
+          assert report["display_status"] in {"BLOCKED","STALE","PAUSED","PARTIAL","SHADOW_OK"}
+          html=(folder/"index.html").read_text(encoding="utf-8")
+          txt=html+"\n"+(folder/"market.json").read_text(encoding="utf-8")
+          for secret in ("N42_PRIVATE","ledger_checkpoint","PRIVATE_ONLY_CANARY",
+                         "A_00631L_units","F_0050_units","N41_PRIVATE_MODEL_LEDGER_JSON",
+                         "f034188/tw50-signal-pilot","500000","NT$500,000"):
+              assert secret not in txt,"Forbidden private-data pattern found"
+          print("PUBLIC_SITE_PRIVACY_AND_SCHEMA_PASS")
+          PY
+      - name: Upload ONLY site/ for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check whether GitHub Pages was enabled in repository settings
+        id: page-status
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          HTTP_CODE=$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" \
+             --header "Authorization: Bearer $GH_TOKEN" \
+             --header "Accept: application/vnd.github+json" \
+             "https://api.github.com/repos/$GITHUB_REPOSITORY/pages")
+          if [ "$HTTP_CODE" = 200 ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "GitHub Pages not yet enabled (HTTP $HTTP_CODE). Enable Settings > Pages > GitHub Actions, then rerun this workflow."
+          fi
+      - name: Deploy vetted public pages artifact
+        if: steps.page-status.outputs.enabled == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
+# Contains no private research, API keys, holdings or model account balances.

@@ -180,9 +180,9 @@ def benchmark(data):
         prev=after
         external_net+=ext
         if ext:flows.append((at,-ext))
+        price=raw_price
         receipt(at,ext,bought,sold)
         last=at
-        price=raw_price
     elapsed=(last-start).days
     annual=None
     xirr=None

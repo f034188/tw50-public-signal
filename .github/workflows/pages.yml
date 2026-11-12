@@ -65,4 +65,41 @@ jobs:
       - name: Deploy vetted public pages artifact
         id: deployment
         uses: actions/deploy-pages@v4
+
+  anonymous_http_smoke_test:
+    needs: deploy
+    if: ${{ needs.deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Verify unauthenticated public website and market.json
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/tw50-public-check
+          ROOT="https://f034188.github.io/tw50-public-signal/"
+          curl --fail --location --silent --show-error --retry 8 --retry-delay 3 --retry-all-errors \
+            --output /tmp/tw50-public-check/index.html "$ROOT"
+          curl --fail --location --silent --show-error --retry 8 --retry-delay 3 --retry-all-errors \
+            --output /tmp/tw50-public-check/market.json "$ROOT"market.json
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          index=Path('/tmp/tw50-public-check/index.html').read_text(encoding='utf-8')
+          data=json.loads(Path('/tmp/tw50-public-check/market.json').read_text(encoding='utf-8'))
+          assert '<title>台股趨勢觀察' in index, 'Unexpected public HTML'
+          assert 'fetch("market.json?' in index, 'Browser market integration missing'
+          assert data.get("schema_version")=="N43-PUBLIC-MARKET-OBSERVATION-v1"
+          assert data.get("is_actionable") is False
+          assert data.get("corporate_action_discovery_complete") is False
+          assert set(data)=={"schema_version","data_date","generated_at_taipei",
+              "display_status","trend","trend_change","l2_trading",
+              "update_quality","corporate_action_discovery_complete",
+              "is_actionable","data_source","purpose"}
+          for marker in ("ledger_checkpoint","A_00631L_units","F_0050_units",
+                         "PRIVATE_ONLY_CANARY","tw50-signal-pilot","500000"):
+              assert marker not in index and marker not in json.dumps(data), "Private leakage marker"
+          print("ANONYMOUS_PUBLIC_HTTP_200_AND_MARKET_DATA_PASS")
+          print("public_data_date="+str(data.get("data_date")))
+          print("public_market_status="+str(data.get("display_status")))
+          PY
 # Contains no private research, API keys, holdings or model account balances.

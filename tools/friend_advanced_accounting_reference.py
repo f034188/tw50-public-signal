@@ -146,6 +146,17 @@ def cash_transaction(event, books):
         return -amount
     raise LedgerError("unknown external flow")
 
+def internal_transfer(event, books):
+    a=event.get("from_sleeve")
+    b=event.get("to_sleeve")
+    if a not in SLEEVES or b not in SLEEVES or a==b:
+        raise LedgerError("internal transfer must have two different valid sleeves")
+    amount=dnum(event.get("amount"),"transfer_amount",allow_zero=False)
+    if books[a]["cash"]<amount:
+        raise LedgerError("insufficient internal transfer cash")
+    books[a]["cash"]-=amount
+    books[b]["cash"]+=amount
+
 def trade(event, books):
     sleeve=event.get("sleeve")
     sym=event.get("symbol")
@@ -235,18 +246,22 @@ def evaluate(data):
         if at<=last:raise LedgerError("dates must strictly increase; duplicate days blocked")
         px=marks(row)
         events=row.get("events",[])
-        if not isinstance(events,list):raise LedgerError("events must be list")
+        if not isinstance(events,list) or any(not isinstance(e,dict) for e in events):
+            raise LedgerError("events must be a list of objects")
         actions=[e for e in events if e.get("type") in ("SPLIT","EX_DIV","DIVIDEND_PAID")]
         apply_actions(actions,at,books)
         before=total(books,px)
         if before<=0:raise LedgerError("nonpositive preflow NAV")
         flows=[e for e in events if e.get("type") in ("DEPOSIT","WITHDRAW")]
+        transfers=[e for e in events if e.get("type")=="INTERNAL_TRANSFER"]
         close_trades=[e for e in events if e.get("type") in ("BUY","SELL")]
-        if len(actions)+len(flows)+len(close_trades)!=len(events):
+        if len(actions)+len(flows)+len(transfers)+len(close_trades)!=len(events):
             raise LedgerError("unknown event type")
         flow=Decimal(0)
         for event in flows:
             flow+=cash_transaction(event,books)
+        for event in transfers:
+            internal_transfer(event,books)
         for event in close_trades:
             tid=event.get("trade_id")
             if not isinstance(tid,str) or not tid or tid in ids:

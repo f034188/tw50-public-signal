@@ -1,0 +1,52 @@
+name: Friend advanced virtual-ledger accounting tests (fake data only)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "tools/friend_advanced_accounting_reference.py"
+      - "tests/test_friend_advanced_accounting_reference.py"
+      - "examples/FICTIONAL_friend_account_only.json"
+      - ".github/workflows/friend_advanced_accounting_ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate_fake_only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Confirm fixture is explicitly fictional
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open("examples/FICTIONAL_friend_account_only.json",encoding="utf-8"))
+          assert p.get("synthetic_only") is True
+          assert p.get("schema_version")=="FRIEND-LEDGER-REFERENCE-v1"
+          assert set(p["initial"])=={"F","A"}
+          print("SYNTHETIC_ONLY_FIXTURE_PASS")
+          PY
+      - name: Test cash flows, returns, fees, dividend and split handling
+        run: |
+          python -m unittest discover -s tests -p "test_friend_advanced_accounting_reference.py" -v
+      - name: Reproduce fictional portfolio numerical output
+        run: |
+          python tools/friend_advanced_accounting_reference.py examples/FICTIONAL_friend_account_only.json --output /tmp/fake_portfolio_result.json
+          python - <<'PY'
+          import json
+          d=json.load(open("/tmp/fake_portfolio_result.json",encoding="utf-8"))
+          assert d["initial_nav_twd"]=="24000.00"
+          assert d["ending_nav_twd"]=="25213.00"
+          assert d["external_net_contributions_twd"]=="1000.00"
+          assert d["net_pnl_twd"]=="213.00"
+          assert d["under_one_year_annualization_suppressed"] is True
+          assert d["orders_placed"] is False
+          print("FAKE_LEDGER_CASHFLOW_AUDIT_PASS")
+          PY
+# No private user positions, no public-site upload of account data, no brokerage orders.

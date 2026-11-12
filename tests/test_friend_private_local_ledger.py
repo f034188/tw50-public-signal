@@ -58,6 +58,10 @@ class SafeLocalCheckpoint(unittest.TestCase):
         initial=fake()
         initial.pop("synthetic_only")
         initial["owner_verified_starting_positions"]=True
+        for row in initial["days"]:
+            for e in row.get("events",[]):
+                if e.get("type") in ("DEPOSIT","WITHDRAW"):
+                    e["owner_confirmed_cash_flow"]=True
         # Trade on day 2 is unconfirmed, should block on init.
         with self.assertRaisesRegex(LedgerError,"MODEL_SUGGESTION_IS_NOT_CONFIRMED_FILL"):
             initialize(self.file,initial)

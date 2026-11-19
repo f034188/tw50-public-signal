@@ -1,7 +1,7 @@
 {
   "schema_version": "N43-PUBLIC-MARKET-OBSERVATION-v1",
-  "data_date": "2026-11-18",
-  "generated_at_taipei": "2026-11-19T02:26:44+08:00",
+  "data_date": "2026-11-19",
+  "generated_at_taipei": "2026-11-20T02:42:36+08:00",
   "display_status": "SHADOW_OK",
   "trend": "防守",
   "trend_change": "無新切換",
